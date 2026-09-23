@@ -47,12 +47,19 @@
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
 
           <!-- Budget -->
+          <!-- Budget -->
           <div class="form-group">
             <label class="form-label" for="budget">Jewelry Budget</label>
             <div class="input-prefix-group">
               <span class="input-prefix">₹</span>
               <input type="number" id="budget" name="budget" class="form-input"
-                placeholder="e.g. 15000" min="500" required />
+                placeholder="e.g. 25000" min="500" value="25000" required />
+            </div>
+            <div class="preset-pills">
+              <button type="button" class="preset-btn" onclick="setJewelryBudget(5000, this)">₹5K Daily/Office</button>
+              <button type="button" class="preset-btn active" onclick="setJewelryBudget(25000, this)">₹25K Festive Event</button>
+              <button type="button" class="preset-btn" onclick="setJewelryBudget(60000, this)">₹60K Wedding Guest</button>
+              <button type="button" class="preset-btn" onclick="setJewelryBudget(150000, this)">₹1.5L Royal Bridal</button>
             </div>
           </div>
 
@@ -60,14 +67,14 @@
           <div class="form-group">
             <label class="form-label" for="occasion">Occasion</label>
             <select id="occasion" name="occasion" class="form-select">
-              <option value="Wedding">💒 Wedding</option>
-              <option value="Anniversary">💑 Anniversary</option>
-              <option value="Birthday">🎂 Birthday</option>
-              <option value="Festival">🪔 Festival / Puja</option>
-              <option value="Office / Professional">💼 Office / Professional</option>
+              <option value="Wedding" selected>💒 Wedding / Sangeet</option>
+              <option value="Anniversary">💑 Anniversary Celebration</option>
+              <option value="Birthday">🎂 Birthday Celebration</option>
+              <option value="Festival">🪔 Festival / Diwali / Puja</option>
+              <option value="Office / Professional">💼 Office / Executive</option>
               <option value="Casual Day Out">☀️ Casual Day Out</option>
-              <option value="Date Night">🌙 Date Night</option>
-              <option value="Graduation">🎓 Graduation</option>
+              <option value="Date Night">🌙 Evening Cocktail / Date</option>
+              <option value="Graduation">🎓 Graduation / Formal</option>
             </select>
           </div>
 
@@ -75,16 +82,95 @@
 
         <!-- Style Preference -->
         <div class="form-group">
-          <label class="form-label">Style Preference</label>
+          <label class="form-label">Style Aesthetic</label>
           <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;" id="style-chips">
             <!-- Built by JS -->
           </div>
           <input type="hidden" name="style" id="style-hidden" value="Modern Minimalist" />
         </div>
 
+        <!-- Guided Styling Intelligence Section -->
+        <div class="intel-section">
+          <div class="intel-header">
+            <span>💎</span> Couture Styling Intel & Attire Alignment
+          </div>
+          <p class="intel-subtitle">Select your outfit tone, neckline, and metal preference for perfect color-wheel harmony.</p>
+
+          <!-- Outfit Hue Swatches -->
+          <div class="form-group">
+            <label class="form-label">1. Primary Outfit Hue</label>
+            <div class="color-swatch-group" id="outfit-color-chips">
+              <div class="swatch-item selected" data-value="Emerald & Forest Green">
+                <span class="swatch-dot" style="background:#097969"></span>
+                <span>Emerald / Dark Green</span>
+              </div>
+              <div class="swatch-item" data-value="Crimson Red & Ruby Maroon">
+                <span class="swatch-dot" style="background:#C70039"></span>
+                <span>Ruby Crimson / Maroon</span>
+              </div>
+              <div class="swatch-item" data-value="Haldi Mustard & Golden Yellow">
+                <span class="swatch-dot" style="background:#E1AD01"></span>
+                <span>Mustard / Haldi Yellow</span>
+              </div>
+              <div class="swatch-item" data-value="Blush Pink & Rose Peach">
+                <span class="swatch-dot" style="background:#FFB6C1"></span>
+                <span>Pastel Pink / Peach</span>
+              </div>
+              <div class="swatch-item" data-value="Midnight Navy & Classic Black">
+                <span class="swatch-dot" style="background:#1B1F38"></span>
+                <span>Royal Navy / Black</span>
+              </div>
+              <div class="swatch-item" data-value="Ivory Cream & Champagne">
+                <span class="swatch-dot" style="background:#FDFBF7;border-color:#ccc"></span>
+                <span>Ivory / Off-White</span>
+              </div>
+            </div>
+            <input type="hidden" name="outfit_color" id="outfit-color-hidden" value="Emerald & Forest Green" />
+          </div>
+
+          <!-- Neckline Architecture -->
+          <div class="form-group">
+            <label class="form-label">2. Attire Neckline Architecture</label>
+            <div class="chip-group" id="neckline-chips">
+              <div class="select-chip selected" data-value="Sweetheart / Queen Anne Neckline"><span class="chip-icon">✨</span> Sweetheart / Queen Anne</div>
+              <div class="select-chip" data-value="Deep V-Neck / Plunge"><span class="chip-icon">📐</span> V-Neck / Plunge</div>
+              <div class="select-chip" data-value="Boat Neck / Off-Shoulder"><span class="chip-icon">〰️</span> Boat Neck / Off-Shoulder</div>
+              <div class="select-chip" data-value="Round / Scoop Neck"><span class="chip-icon">⭕</span> Round / Scoop Neck</div>
+              <div class="select-chip" data-value="High Collar / Mandarin / Halter"><span class="chip-icon">👔</span> High Neck / Mandarin</div>
+            </div>
+            <input type="hidden" name="neckline" id="neckline-hidden" value="Sweetheart / Queen Anne Neckline" />
+          </div>
+
+          <!-- Metal Finish -->
+          <div class="form-group">
+            <label class="form-label">3. Preferred Metal Finish</label>
+            <div class="chip-group" id="metal-chips">
+              <div class="select-chip selected" data-value="22K Antique Yellow Gold"><span class="chip-icon">🪙</span> 22K Antique Yellow Gold</div>
+              <div class="select-chip" data-value="Rose Gold Shimmer"><span class="chip-icon">🌸</span> Rose Gold Shimmer</div>
+              <div class="select-chip" data-value="Rhodium Silver / White Gold Finish"><span class="chip-icon">💍</span> Rhodium Silver / Diamond Finish</div>
+              <div class="select-chip" data-value="Temple Matte Antique Gold"><span class="chip-icon">🪔</span> Temple Matte Nakshi Gold</div>
+              <div class="select-chip" data-value="Dual Tone Gold & Silver"><span class="chip-icon">⚡</span> Dual Tone Fusion</div>
+            </div>
+            <input type="hidden" name="metal_preference" id="metal-hidden" value="22K Antique Yellow Gold" />
+          </div>
+
+          <!-- Target Pieces -->
+          <div class="form-group">
+            <label class="form-label">4. Target Ensemble Pieces <span style="font-size:0.75rem;text-transform:none;color:var(--text-muted)">(Select all required)</span></label>
+            <div class="chip-group" id="pieces-chips">
+              <div class="select-chip selected" data-value="Choker Necklace Set"><span class="chip-icon">📿</span> Choker / Necklace Set</div>
+              <div class="select-chip selected" data-value="Statement Earrings / Jhumkas"><span class="chip-icon">✨</span> Earrings / Jhumkas</div>
+              <div class="select-chip selected" data-value="Bangles / Kadas"><span class="chip-icon">💫</span> Bangles / Kadas</div>
+              <div class="select-chip" data-value="Maang Tikka / Matha Patti"><span class="chip-icon">👑</span> Maang Tikka</div>
+              <div class="select-chip selected" data-value="Cocktail Ring"><span class="chip-icon">💍</span> Cocktail Ring</div>
+            </div>
+            <input type="hidden" name="target_pieces" id="pieces-hidden" value="Choker Necklace Set, Statement Earrings / Jhumkas, Bangles / Kadas, Cocktail Ring" />
+          </div>
+        </div>
+
         <!-- Image Upload -->
         <div class="form-group">
-          <label class="form-label">Outfit Photo <span style="color:var(--text-muted);font-size:0.78rem;text-transform:none;font-weight:400">(Optional — for color-matched recommendations)</span></label>
+          <label class="form-label">Optional: Upload Outfit Photo <span style="color:var(--text-muted);font-size:0.78rem;text-transform:none;font-weight:400">(for AI vision color verification)</span></label>
           <div class="upload-zone" id="upload-zone">
             <input type="file" id="outfit_image" name="outfit_image" accept="image/*" />
             <div class="upload-zone-content">
@@ -99,8 +185,8 @@
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-lg" id="submit-btn" style="width:100%;justify-content:center;">
-          💍 Get Jewelry Recommendations
+        <button type="submit" class="btn btn-primary btn-lg" id="submit-btn" style="width:100%;justify-content:center;margin-top:16px;">
+          💍 Curate Coordinated Jewelry Capsule
         </button>
 
       </form>
@@ -137,6 +223,45 @@
 
   <script src="{{ url_for('static', filename='app.js') }}"></script>
   <script>
+    // ── Quick Budget Presets ────────────────────────────────────
+    function setJewelryBudget(amount, btn) {
+      document.getElementById('budget').value = amount;
+      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+    }
+
+    // ── Single-Select Chip Setup Helper ────────────────────────
+    function initSingleSelectChips(containerId, hiddenInputId) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.querySelectorAll('.select-chip, .swatch-item').forEach(chip => {
+        chip.addEventListener('click', () => {
+          container.querySelectorAll('.select-chip, .swatch-item').forEach(c => c.classList.remove('selected'));
+          chip.classList.add('selected');
+          document.getElementById(hiddenInputId).value = chip.getAttribute('data-value');
+        });
+      });
+    }
+
+    // ── Multi-Select Chip Setup Helper ─────────────────────────
+    function initMultiSelectChips(containerId, hiddenInputId) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.querySelectorAll('.select-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          chip.classList.toggle('selected');
+          const selected = Array.from(container.querySelectorAll('.select-chip.selected'))
+            .map(c => c.getAttribute('data-value'));
+          document.getElementById(hiddenInputId).value = selected.join(', ');
+        });
+      });
+    }
+
+    initSingleSelectChips('outfit-color-chips', 'outfit-color-hidden');
+    initSingleSelectChips('neckline-chips', 'neckline-hidden');
+    initSingleSelectChips('metal-chips', 'metal-hidden');
+    initMultiSelectChips('pieces-chips', 'pieces-hidden');
+
     // ── Style chips ───────────────────────────────────────────
     const STYLES = [
       { label: 'Modern Minimalist',  icon: '✦' },
@@ -147,7 +272,7 @@
       { label: 'Delicate & Dainty',  icon: '🌷' },
     ];
 
-    let selectedStyle = 'Modern Minimalist';
+    let selectedStyle = 'Traditional / Ethnic';
 
     function buildStyleChips() {
       const container = document.getElementById('style-chips');

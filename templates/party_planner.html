@@ -47,12 +47,19 @@
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
 
           <!-- Budget -->
+          <!-- Budget -->
           <div class="form-group">
             <label class="form-label" for="budget">Total Budget</label>
             <div class="input-prefix-group">
               <span class="input-prefix">₹</span>
               <input type="number" id="budget" name="budget" class="form-input"
-                placeholder="e.g. 100000" min="1000" required />
+                placeholder="e.g. 150000" min="1000" value="150000" required />
+            </div>
+            <div class="preset-pills">
+              <button type="button" class="preset-btn" onclick="setPartyBudget(50000, 50, this)">₹50K (50 Pax)</button>
+              <button type="button" class="preset-btn active" onclick="setPartyBudget(150000, 100, this)">₹1.5L (100 Pax)</button>
+              <button type="button" class="preset-btn" onclick="setPartyBudget(400000, 200, this)">₹4L (200 Pax)</button>
+              <button type="button" class="preset-btn" onclick="setPartyBudget(1200000, 300, this)">₹12L Gala (300 Pax)</button>
             </div>
           </div>
 
@@ -60,7 +67,7 @@
           <div class="form-group">
             <label class="form-label" for="guests">Number of Guests</label>
             <input type="number" id="guests" name="guests" class="form-input"
-              placeholder="e.g. 100" min="1" max="10000" required />
+              placeholder="e.g. 100" min="1" max="10000" value="100" required />
           </div>
 
         </div>
@@ -71,7 +78,7 @@
           <div class="form-group">
             <label class="form-label" for="event_type">Event Type</label>
             <select id="event_type" name="event_type" class="form-select">
-              <option value="Birthday">🎂 Birthday Party</option>
+              <option value="Birthday" selected>🎂 Birthday Party</option>
               <option value="Wedding">💒 Wedding</option>
               <option value="Corporate">💼 Corporate Event</option>
               <option value="Baby Shower">🍼 Baby Shower</option>
@@ -85,7 +92,7 @@
           <div class="form-group">
             <label class="form-label" for="venue">Venue Type</label>
             <select id="venue" name="venue" class="form-select">
-              <option value="Indoor Banquet Hall">🏛️ Indoor Banquet Hall</option>
+              <option value="Indoor Banquet Hall" selected>🏛️ Indoor Banquet Hall</option>
               <option value="Outdoor Garden">🌳 Outdoor Garden</option>
               <option value="Home / Terrace">🏠 Home / Terrace</option>
               <option value="Restaurant Private Room">🍽️ Restaurant Private Room</option>
@@ -96,35 +103,94 @@
 
         </div>
 
+        <!-- Guided Event Intelligence Section -->
+        <div class="intel-section">
+          <div class="intel-header">
+            <span>🎉</span> Event Experience Intel & Hospitality Vibe
+          </div>
+          <p class="intel-subtitle">Tailor the culinary spread, sound, and beverage program with single-tap suggestions.</p>
+
+          <!-- Dietary & Gastronomy -->
+          <div class="form-group">
+            <label class="form-label">1. Culinary Spread & Dietary Framework</label>
+            <div class="chip-group" id="dietary-chips">
+              <div class="select-chip selected" data-value="Multi-Cuisine Veg & Non-Veg"><span class="chip-icon">🍗</span> Multi-Cuisine Veg & Non-Veg</div>
+              <div class="select-chip" data-value="Strict Pure Vegetarian & Jain Options"><span class="chip-icon">🌱</span> Strict Pure Veg / Jain</div>
+              <div class="select-chip" data-value="Live Interactive Food Stations & Wok"><span class="chip-icon">🍜</span> Live Wok & Chat Counters</div>
+              <div class="select-chip" data-value="Cocktail Finger Foods & Tapas Grazing"><span class="chip-icon">🍕</span> Finger Foods & Tapas</div>
+              <div class="select-chip" data-value="Royal Regional Traditional Thali"><span class="chip-icon">🥘</span> Royal Regional Feast</div>
+            </div>
+            <input type="hidden" id="dietary-hidden" value="Multi-Cuisine Veg & Non-Veg" />
+          </div>
+
+          <!-- Entertainment & Energy Vibe -->
+          <div class="form-group">
+            <label class="form-label">2. Entertainment & Energy Vibe</label>
+            <div class="chip-group" id="entertainment-chips">
+              <div class="select-chip selected" data-value="Live DJ, Sound Rig & Dancefloor"><span class="chip-icon">🎧</span> Live DJ & Dancefloor</div>
+              <div class="select-chip" data-value="Acoustic Live Band & Soft Vocals"><span class="chip-icon">🎸</span> Acoustic Live Band</div>
+              <div class="select-chip" data-value="Professional Emcee with Interactive Games"><span class="chip-icon">🎤</span> Emcee & Party Games</div>
+              <div class="select-chip" data-value="Curated Spotify Ambient Lounge Setup"><span class="chip-icon">📱</span> Chill Ambient Lounge</div>
+            </div>
+            <input type="hidden" id="entertainment-hidden" value="Live DJ, Sound Rig & Dancefloor" />
+          </div>
+
+          <!-- Bar & Beverage Setup -->
+          <div class="form-group">
+            <label class="form-label">3. Beverage & Bar Program</label>
+            <div class="chip-group" id="bar-chips">
+              <div class="select-chip selected" data-value="Mocktails, Fresh Fruit Coolers & Soft Bar"><span class="chip-icon">🍹</span> Mocktails & Artisanal Coolers</div>
+              <div class="select-chip" data-value="Beer, Wine & Sangria Lounge"><span class="chip-icon">🍷</span> Beer & Wine Lounge</div>
+              <div class="select-chip" data-value="Full Premium Open Bar with Certified Mixologist"><span class="chip-icon">🍸</span> Full Open Bar & Mixologist</div>
+              <div class="select-chip" data-value="BYOB with Glassware & Ice Management"><span class="chip-icon">🥂</span> BYOB with Service Setup</div>
+            </div>
+            <input type="hidden" id="bar-hidden" value="Mocktails, Fresh Fruit Coolers & Soft Bar" />
+          </div>
+
+          <!-- Special Event Inclusions -->
+          <div class="form-group">
+            <label class="form-label">4. Special Features & Add-ons <span style="font-size:0.75rem;text-transform:none;color:var(--text-muted)">(Click to add)</span></label>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;">
+              <span class="quick-tag active" onclick="togglePartyTag(this, '360 Video Photobooth')">+ 360 Video Photobooth</span>
+              <span class="quick-tag active" onclick="togglePartyTag(this, 'Custom Themed Fondant Cake')">+ Custom Themed Cake</span>
+              <span class="quick-tag" onclick="togglePartyTag(this, 'Personalized Return Favors')">+ Return Favors</span>
+              <span class="quick-tag" onclick="togglePartyTag(this, 'Kids Activity Corner & Games')">+ Kids Corner</span>
+              <span class="quick-tag" onclick="togglePartyTag(this, 'Drone & Cinematic Video')">+ Drone Videography</span>
+              <span class="quick-tag" onclick="togglePartyTag(this, 'Floral Photo Backdrop')">+ Floral Backdrop</span>
+            </div>
+            <input type="hidden" id="special-elements-hidden" value="360 Video Photobooth, Custom Themed Fondant Cake" />
+          </div>
+        </div>
+
         <!-- Live Budget Preview -->
-        <div id="budget-preview" style="display:none;margin:8px 0 20px;">
-          <label class="form-label">Estimated Budget Breakdown</label>
+        <div id="budget-preview" style="display:block;margin:16px 0 20px;">
+          <label class="form-label">Estimated Budget Breakdown (Live Projection)</label>
           <div class="budget-breakdown" id="budget-breakdown-grid">
             <div class="breakdown-item">
               <div class="breakdown-icon">🍱</div>
-              <div class="breakdown-label">Catering</div>
-              <div class="breakdown-amount" id="bd-catering">—</div>
+              <div class="breakdown-label">Catering (~40%)</div>
+              <div class="breakdown-amount" id="bd-catering">₹60,000</div>
             </div>
             <div class="breakdown-item">
               <div class="breakdown-icon">🎀</div>
-              <div class="breakdown-label">Decoration</div>
-              <div class="breakdown-amount" id="bd-decor">—</div>
+              <div class="breakdown-label">Decoration (~25%)</div>
+              <div class="breakdown-amount" id="bd-decor">₹37,500</div>
             </div>
             <div class="breakdown-item">
               <div class="breakdown-icon">🎵</div>
-              <div class="breakdown-label">Entertainment</div>
-              <div class="breakdown-amount" id="bd-entertainment">—</div>
+              <div class="breakdown-label">Entertainment (~20%)</div>
+              <div class="breakdown-amount" id="bd-entertainment">₹30,000</div>
             </div>
             <div class="breakdown-item">
               <div class="breakdown-icon">🏨</div>
-              <div class="breakdown-label">Misc / Stay</div>
-              <div class="breakdown-amount" id="bd-misc">—</div>
+              <div class="breakdown-label">Misc / Stay (~15%)</div>
+              <div class="breakdown-amount" id="bd-misc">₹22,500</div>
             </div>
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-lg" id="submit-btn" style="width:100%;justify-content:center;">
-          🎉 Generate Party Plan
+        <button type="submit" class="btn btn-primary btn-lg" id="submit-btn" style="width:100%;justify-content:center;margin-top:16px;">
+          🎉 Plan Complete Bespoke Celebration
         </button>
 
       </form>
@@ -155,9 +221,19 @@
 
   <script src="{{ url_for('static', filename='app.js') }}"></script>
   <script>
-    // ── Live budget preview ────────────────────────────────────
+    // ── Live budget preview & presets ─────────────────────────
     const budgetInput = document.getElementById('budget');
+    const guestsInput = document.getElementById('guests');
     budgetInput.addEventListener('input', updatePreview);
+    guestsInput.addEventListener('input', updatePreview);
+
+    function setPartyBudget(amount, guests, btn) {
+      budgetInput.value = amount;
+      guestsInput.value = guests;
+      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      updatePreview();
+    }
 
     function updatePreview() {
       const val = parseInt(budgetInput.value);
@@ -172,6 +248,36 @@
       document.getElementById('bd-misc').textContent           = formatINR(Math.round(val * 0.15));
     }
 
+    // ── Single-Select Chip Setup Helper ────────────────────────
+    function initSingleSelectChips(containerId, hiddenInputId) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.querySelectorAll('.select-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          container.querySelectorAll('.select-chip').forEach(c => c.classList.remove('selected'));
+          chip.classList.add('selected');
+          document.getElementById(hiddenInputId).value = chip.getAttribute('data-value');
+        });
+      });
+    }
+
+    initSingleSelectChips('dietary-chips', 'dietary-hidden');
+    initSingleSelectChips('entertainment-chips', 'entertainment-hidden');
+    initSingleSelectChips('bar-chips', 'bar-hidden');
+
+    // ── Toggle Party Tag Helper ────────────────────────────────
+    function togglePartyTag(el, tagText) {
+      el.classList.toggle('active');
+      const hiddenInput = document.getElementById('special-elements-hidden');
+      let current = hiddenInput.value.split(',').map(s => s.trim()).filter(Boolean);
+      if (el.classList.contains('active')) {
+        if (!current.includes(tagText)) current.push(tagText);
+      } else {
+        current = current.filter(t => t !== tagText);
+      }
+      hiddenInput.value = current.join(', ');
+    }
+
     // ── Form Submission ────────────────────────────────────────
     document.getElementById('party-form').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -183,15 +289,30 @@
 
       if (!budget || budget < 1000 || !guests || guests < 1) return;
 
+      // Extract guided intel
+      const dietary            = document.getElementById('dietary-hidden').value;
+      const entertainment_vibe = document.getElementById('entertainment-hidden').value;
+      const bar_setup          = document.getElementById('bar-hidden').value;
+      const special_elements   = document.getElementById('special-elements-hidden').value;
+
       const btn = document.getElementById('submit-btn');
       btn.disabled = true;
-      showLoading('Executive Event Producer is tailoring your celebration...');
+      showLoading('Executive Event Producer is tailoring your celebration with your exact intel...');
 
       try {
         const res = await fetch('/generate-party', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ budget, guests, event_type, venue }),
+          body: JSON.stringify({
+            budget,
+            guests,
+            event_type,
+            venue,
+            dietary,
+            entertainment_vibe,
+            bar_setup,
+            special_elements,
+          }),
         });
 
         const json = await res.json();

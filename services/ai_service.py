@@ -92,23 +92,53 @@ def _call_vision_model(prompt: str, image_b64: str, mime_type: str = "image/jpeg
     return _call_text_model(enhanced_prompt)
 
 
-def generate_home_recommendations(budget: int, rooms: list) -> dict:
+def generate_home_recommendations(
+    budget: int,
+    rooms: list,
+    aesthetic: str = "Modern Contemporary & Warm Functional",
+    occupants: str = "Working Professionals & Family",
+    priorities: str = "Balanced Storage, Comfort & Clean Aesthetics",
+    color_mood: str = "Warm Birch & Earthy Neutrals",
+    special_requests: str = "Standard residential durability and low maintenance",
+) -> dict:
     """
-    Generate home interior recommendations using the cognitive reasoning architecture.
+    Generate home interior recommendations with guided architectural intel.
 
     Args:
         budget: Total budget in INR
         rooms: List of dicts like [{"name": "Living Room", "quantity": 1}, ...]
+        aesthetic: Design theme (Japandi, Modern, Industrial, etc.)
+        occupants: Household profile (Toddlers, Remote WFH, Pets, etc.)
+        priorities: Core focus (Storage, Ergonomics, Kid-Safe, etc.)
+        color_mood: Preferred color palette mood
+        special_requests: Specific living requirements or constraints
     """
     rooms_text = "\n".join(
         [f"- {r['name']} (quantity: {r.get('quantity', 1)})" for r in rooms]
     )
-    prompt = HOME_PLANNER_PROMPT.format(budget=budget, rooms_text=rooms_text)
+    prompt = HOME_PLANNER_PROMPT.format(
+        budget=budget,
+        rooms_text=rooms_text,
+        aesthetic=aesthetic or "Modern Contemporary & Warm Functional",
+        occupants=occupants or "Working Professionals & Family",
+        priorities=priorities or "Balanced Storage, Comfort & Clean Aesthetics",
+        color_mood=color_mood or "Warm Birch & Earthy Neutrals",
+        special_requests=special_requests or "Standard residential durability and low maintenance",
+    )
     return _call_text_model(prompt)
 
 
-def generate_party_recommendations(budget: int, guests: int, event_type: str, venue: str) -> dict:
-    """Generate party planning recommendations with calculated per-head economics."""
+def generate_party_recommendations(
+    budget: int,
+    guests: int,
+    event_type: str,
+    venue: str,
+    dietary: str = "Multi-Cuisine Veg & Non-Veg",
+    entertainment_vibe: str = "Live DJ & Dancefloor",
+    bar_setup: str = "Mocktails & Signature Soft Beverages",
+    special_elements: str = "Thematic Photobooth & Custom Cake",
+) -> dict:
+    """Generate party planning recommendations with calculated per-head economics and guided event intel."""
     per_guest = budget / max(1, guests)
     prompt = PARTY_PLANNER_PROMPT.format(
         budget=budget,
@@ -116,6 +146,10 @@ def generate_party_recommendations(budget: int, guests: int, event_type: str, ve
         event_type=event_type,
         venue=venue,
         per_guest=per_guest,
+        dietary=dietary or "Multi-Cuisine Veg & Non-Veg",
+        entertainment_vibe=entertainment_vibe or "Live DJ & Dancefloor",
+        bar_setup=bar_setup or "Mocktails & Signature Soft Beverages",
+        special_elements=special_elements or "Thematic Photobooth & Custom Cake",
     )
     return _call_text_model(prompt)
 
@@ -124,15 +158,28 @@ def generate_jewelry_recommendations(
     budget: int,
     occasion: str,
     style: str,
+    outfit_color: str = "Classic Royal Tones",
+    neckline: str = "Sweetheart / Scoop Collar",
+    metal_preference: str = "22K Antique Yellow Gold",
+    target_pieces: str = "Choker Necklace Set with Jhumkas & Bangles",
     image_b64: str = None,
     mime_type: str = "image/jpeg",
 ) -> dict:
-    """Generate fine jewelry styling recommendations."""
+    """Generate fine jewelry styling recommendations tailored to neckline, hue, and metal finish."""
+    color_val = outfit_color or "Classic Royal Tones"
+    neckline_val = neckline or "Sweetheart / Scoop Collar"
+    metal_val = metal_preference or "22K Antique Yellow Gold"
+    pieces_val = target_pieces or "Choker Necklace Set with Jhumkas & Bangles"
+
     if image_b64:
         prompt = JEWELRY_PLANNER_VISION_PROMPT.format(
             budget=budget,
             occasion=occasion,
             style=style,
+            outfit_color=color_val,
+            neckline=neckline_val,
+            metal_preference=metal_val,
+            target_pieces=pieces_val,
         )
         return _call_vision_model(prompt, image_b64, mime_type)
     else:
@@ -140,6 +187,10 @@ def generate_jewelry_recommendations(
             budget=budget,
             occasion=occasion,
             style=style,
-            image_context="No outfit image was provided. Focus strictly on occasion harmony and style parameters.",
+            outfit_color=color_val,
+            neckline=neckline_val,
+            metal_preference=metal_val,
+            target_pieces=pieces_val,
+            image_context="No outfit image was provided. Focus strictly on occasion harmony, specified neckline, and style parameters.",
         )
         return _call_text_model(prompt)

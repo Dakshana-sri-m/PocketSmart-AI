@@ -36,7 +36,22 @@ def generate_jewelry():
             image_bytes = file.read()
             image_b64 = base64.b64encode(image_bytes).decode("utf-8")
 
-    result = generate_jewelry_recommendations(budget, occasion, style, image_b64, mime_type)
+    outfit_color = request.form.get("outfit_color")
+    neckline = request.form.get("neckline")
+    metal_preference = request.form.get("metal_preference")
+    target_pieces = request.form.get("target_pieces")
+
+    result = generate_jewelry_recommendations(
+        budget,
+        occasion,
+        style,
+        outfit_color=outfit_color,
+        neckline=neckline,
+        metal_preference=metal_preference,
+        target_pieces=target_pieces,
+        image_b64=image_b64,
+        mime_type=mime_type,
+    )
     if result["success"]:
         return jsonify(result)
     else:

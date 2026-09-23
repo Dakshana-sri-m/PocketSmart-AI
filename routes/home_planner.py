@@ -28,7 +28,21 @@ def generate_home():
     except (ValueError, TypeError):
         return jsonify({"success": False, "error": "Invalid budget value"}), 400
 
-    result = generate_home_recommendations(budget, rooms)
+    aesthetic = data.get("aesthetic")
+    occupants = data.get("occupants")
+    priorities = data.get("priorities")
+    color_mood = data.get("color_mood")
+    special_requests = data.get("special_requests")
+
+    result = generate_home_recommendations(
+        budget,
+        rooms,
+        aesthetic=aesthetic,
+        occupants=occupants,
+        priorities=priorities,
+        color_mood=color_mood,
+        special_requests=special_requests,
+    )
     if result["success"]:
         return jsonify(result)
     else:

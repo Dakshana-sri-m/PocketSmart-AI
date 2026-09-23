@@ -31,7 +31,21 @@ def generate_party():
     except (ValueError, TypeError):
         return jsonify({"success": False, "error": "Invalid budget or guest count"}), 400
 
-    result = generate_party_recommendations(budget, guests, event_type, venue)
+    dietary = data.get("dietary")
+    entertainment_vibe = data.get("entertainment_vibe")
+    bar_setup = data.get("bar_setup")
+    special_elements = data.get("special_elements")
+
+    result = generate_party_recommendations(
+        budget,
+        guests,
+        event_type,
+        venue,
+        dietary=dietary,
+        entertainment_vibe=entertainment_vibe,
+        bar_setup=bar_setup,
+        special_elements=special_elements,
+    )
     if result["success"]:
         return jsonify(result)
     else:

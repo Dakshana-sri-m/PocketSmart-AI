@@ -47,6 +47,7 @@
       <form id="home-form" novalidate>
 
         <!-- Budget -->
+        <!-- Budget -->
         <div class="form-group">
           <label class="form-label" for="budget">Total Budget</label>
           <div class="input-prefix-group">
@@ -56,11 +57,17 @@
               id="budget"
               name="budget"
               class="form-input"
-              placeholder="e.g. 50000"
+              placeholder="e.g. 250000"
               min="1000"
               max="10000000"
               required
             />
+          </div>
+          <div class="preset-pills">
+            <button type="button" class="preset-btn" onclick="setBudget(50000, this)">₹50K Starter</button>
+            <button type="button" class="preset-btn active" onclick="setBudget(250000, this)">₹2.5L Smart Urban</button>
+            <button type="button" class="preset-btn" onclick="setBudget(800000, this)">₹8L Premium</button>
+            <button type="button" class="preset-btn" onclick="setBudget(2500000, this)">₹25L Luxury Turnkey</button>
           </div>
         </div>
 
@@ -76,8 +83,100 @@
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-lg" id="submit-btn" style="width:100%;justify-content:center;margin-top:8px;">
-          ✨ Generate Recommendations
+        <!-- Guided Intelligence Section -->
+        <div class="intel-section">
+          <div class="intel-header">
+            <span>🎯</span> Interior Design Intel & Lifestyle Nuances
+          </div>
+          <p class="intel-subtitle">Tap suggestions below to pinpoint your recommendations — no guessing required.</p>
+
+          <!-- Aesthetic Theme -->
+          <div class="form-group">
+            <label class="form-label">1. Curated Aesthetic Vibe</label>
+            <div class="chip-group" id="aesthetic-chips">
+              <div class="select-chip selected" data-value="Japandi & Scandinavian Minimalist"><span class="chip-icon">🌿</span> Japandi & Scandinavian</div>
+              <div class="select-chip" data-value="Modern Contemporary & Sleek"><span class="chip-icon">✨</span> Modern Contemporary</div>
+              <div class="select-chip" data-value="Classic Indian Solid Wood & Sheesham"><span class="chip-icon">🏛️</span> Classic Indian Sheesham</div>
+              <div class="select-chip" data-value="Industrial Loft & Matte Black"><span class="chip-icon">🏢</span> Industrial Loft</div>
+              <div class="select-chip" data-value="Playful Montessori & Low-Height"><span class="chip-icon">🧸</span> Playful Montessori</div>
+              <div class="select-chip" data-value="Bohemian Warm & Textured"><span class="chip-icon">🌸</span> Bohemian Chic</div>
+            </div>
+            <input type="hidden" id="aesthetic-hidden" value="Japandi & Scandinavian Minimalist" />
+          </div>
+
+          <!-- Household / Occupants -->
+          <div class="form-group">
+            <label class="form-label">2. Household & Occupant Profile <span style="font-size:0.75rem;text-transform:none;color:var(--text-muted)">(Select all that apply)</span></label>
+            <div class="chip-group" id="occupants-chips">
+              <div class="select-chip selected" data-value="Family with Toddlers/Kids"><span class="chip-icon">👶</span> Toddlers / Kids</div>
+              <div class="select-chip selected" data-value="Remote Work WFH Focus"><span class="chip-icon">💻</span> Remote WFH Focus</div>
+              <div class="select-chip" data-value="Pet Friendly Environment"><span class="chip-icon">🐾</span> Pet Friendly</div>
+              <div class="select-chip" data-value="Newlywed Couple"><span class="chip-icon">👫</span> Couple / Newlyweds</div>
+              <div class="select-chip" data-value="Minimalist Bachelor"><span class="chip-icon">🧘</span> Bachelor / Minimalist</div>
+            </div>
+            <input type="hidden" id="occupants-hidden" value="Family with Toddlers/Kids, Remote Work WFH Focus" />
+          </div>
+
+          <!-- Functional Priorities -->
+          <div class="form-group">
+            <label class="form-label">3. Core Priority Focus <span style="font-size:0.75rem;text-transform:none;color:var(--text-muted)">(Select all that apply)</span></label>
+            <div class="chip-group" id="priorities-chips">
+              <div class="select-chip selected" data-value="Maximum Storage & Organization"><span class="chip-icon">📦</span> Max Storage & Clutter-Free</div>
+              <div class="select-chip selected" data-value="Ergonomics & Posture"><span class="chip-icon">🪑</span> Posture & Ergonomics</div>
+              <div class="select-chip" data-value="Aesthetic & Instagrammable"><span class="chip-icon">🎨</span> Aesthetic & Visual Wow</div>
+              <div class="select-chip selected" data-value="Kid-Safe & Non-Toxic"><span class="chip-icon">🛡️</span> Kid-Safe & Non-Toxic</div>
+              <div class="select-chip" data-value="Smart Home & IoT Lighting"><span class="chip-icon">💡</span> Smart Home & IoT</div>
+            </div>
+            <input type="hidden" id="priorities-hidden" value="Maximum Storage & Organization, Ergonomics & Posture, Kid-Safe & Non-Toxic" />
+          </div>
+
+          <!-- Color Mood -->
+          <div class="form-group">
+            <label class="form-label">4. Color & Lighting Mood</label>
+            <div class="color-swatch-group" id="color-mood-chips">
+              <div class="swatch-item selected" data-value="Warm Birch & Earthy Neutrals">
+                <span class="swatch-dot" style="background:#D8C5A8"></span>
+                <span>Warm Birch & Earthy</span>
+              </div>
+              <div class="swatch-item" data-value="Nordic Sage & Off-White">
+                <span class="swatch-dot" style="background:#7A9A7B"></span>
+                <span>Nordic Sage & White</span>
+              </div>
+              <div class="swatch-item" data-value="Moody Charcoal & Champagne Brass">
+                <span class="swatch-dot" style="background:#2C3437"></span>
+                <span>Moody Charcoal & Brass</span>
+              </div>
+              <div class="swatch-item" data-value="Vibrant Ochre & Terracotta">
+                <span class="swatch-dot" style="background:#C86D51"></span>
+                <span>Vibrant Terracotta</span>
+              </div>
+            </div>
+            <input type="hidden" id="color-mood-hidden" value="Warm Birch & Earthy Neutrals" />
+          </div>
+
+          <!-- Quick Suggestion Tags & Specific Requests -->
+          <div class="form-group">
+            <label class="form-label" for="special-requests">5. Specific Living Nuances <span style="font-size:0.75rem;text-transform:none;color:var(--text-muted)">(Click tags to add)</span></label>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;">
+              <span class="quick-tag" onclick="toggleTag(this, 'No sharp corners')">+ No sharp corners</span>
+              <span class="quick-tag" onclick="toggleTag(this, 'Washable fabric covers')">+ Washable slipcovers</span>
+              <span class="quick-tag" onclick="toggleTag(this, 'Sound dampening acoustics')">+ Sound dampening</span>
+              <span class="quick-tag" onclick="toggleTag(this, 'Hydraulic bed storage')">+ Hydraulic bed storage</span>
+              <span class="quick-tag" onclick="toggleTag(this, 'Anti-glare study lighting')">+ Anti-glare study lighting</span>
+              <span class="quick-tag" onclick="toggleTag(this, 'Compact multi-functional')">+ Compact multi-functional</span>
+            </div>
+            <input
+              type="text"
+              id="special-requests"
+              class="form-input"
+              placeholder="e.g. Needs rounded edges, compact work desk, easy to clean"
+              style="font-size:0.88rem;padding:10px 14px;"
+            />
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg" id="submit-btn" style="width:100%;justify-content:center;margin-top:16px;">
+          ✨ Generate Bespoke Interior Plan
         </button>
 
       </form>
@@ -105,6 +204,61 @@
 
   <script src="{{ url_for('static', filename='app.js') }}"></script>
   <script>
+    // ── Quick Budget Presets ────────────────────────────────────
+    function setBudget(amount, btn) {
+      document.getElementById('budget').value = amount;
+      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+    }
+
+    // Set initial default budget
+    setBudget(250000, document.querySelector('.preset-btn.active'));
+
+    // ── Single-Select Chip Setup Helper ────────────────────────
+    function initSingleSelectChips(containerId, hiddenInputId) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.querySelectorAll('.select-chip, .swatch-item').forEach(chip => {
+        chip.addEventListener('click', () => {
+          container.querySelectorAll('.select-chip, .swatch-item').forEach(c => c.classList.remove('selected'));
+          chip.classList.add('selected');
+          document.getElementById(hiddenInputId).value = chip.getAttribute('data-value');
+        });
+      });
+    }
+
+    // ── Multi-Select Chip Setup Helper ─────────────────────────
+    function initMultiSelectChips(containerId, hiddenInputId) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.querySelectorAll('.select-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          chip.classList.toggle('selected');
+          const selected = Array.from(container.querySelectorAll('.select-chip.selected'))
+            .map(c => c.getAttribute('data-value'));
+          document.getElementById(hiddenInputId).value = selected.join(', ');
+        });
+      });
+    }
+
+    initSingleSelectChips('aesthetic-chips', 'aesthetic-hidden');
+    initMultiSelectChips('occupants-chips', 'occupants-hidden');
+    initMultiSelectChips('priorities-chips', 'priorities-hidden');
+    initSingleSelectChips('color-mood-chips', 'color-mood-hidden');
+
+    // ── Quick Tag Adder ────────────────────────────────────────
+    function toggleTag(el, text) {
+      el.classList.toggle('active');
+      const input = document.getElementById('special-requests');
+      let current = input.value.split(',').map(s => s.trim()).filter(Boolean);
+      if (el.classList.contains('active')) {
+        if (!current.includes(text)) current.push(text);
+      } else {
+        current = current.filter(t => t !== text);
+      }
+      input.value = current.join(', ');
+    }
+
     // ── Room definitions ──────────────────────────────────────
     const ROOMS = [
       { id: 'living',   name: 'Living Room',  icon: '🛋️' },
@@ -117,21 +271,22 @@
       { id: 'study',    name: 'Study / Office', icon: '📚' },
     ];
 
-    const selectedRooms = {}; // { roomId: quantity }
+    const selectedRooms = { 'living': 1, 'study': 1 }; // Default nice selection
 
     function buildRoomGrid() {
       const grid = document.getElementById('room-grid');
       grid.innerHTML = '';
       ROOMS.forEach(room => {
+        const isSel = selectedRooms[room.id] !== undefined;
         const chip = document.createElement('div');
-        chip.className = 'room-chip';
+        chip.className = 'room-chip' + (isSel ? ' selected' : '');
         chip.id = `chip-${room.id}`;
         chip.innerHTML = `
           <div class="room-icon">${room.icon}</div>
           <div class="room-name">${room.name}</div>
           <div class="room-qty-controls">
             <button type="button" class="qty-btn" onclick="changeQty('${room.id}', -1)">−</button>
-            <span class="qty-display" id="qty-${room.id}">1</span>
+            <span class="qty-display" id="qty-${room.id}">${selectedRooms[room.id] || 1}</span>
             <button type="button" class="qty-btn" onclick="changeQty('${room.id}', 1)">+</button>
           </div>
         `;
@@ -187,15 +342,30 @@
         return;
       }
 
+      // Collect guided intel
+      const aesthetic       = document.getElementById('aesthetic-hidden').value;
+      const occupants       = document.getElementById('occupants-hidden').value;
+      const priorities      = document.getElementById('priorities-hidden').value;
+      const color_mood      = document.getElementById('color-mood-hidden').value;
+      const special_requests = document.getElementById('special-requests').value;
+
       const btn = document.getElementById('submit-btn');
       btn.disabled = true;
-      showLoading('Architectural AI is designing your space...');
+      showLoading('Architectural AI is tailoring your spaces with your exact intel...');
 
       try {
         const res = await fetch('/generate-home', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ budget: parseInt(budget), rooms: selectedList }),
+          body: JSON.stringify({
+            budget: parseInt(budget),
+            rooms: selectedList,
+            aesthetic,
+            occupants,
+            priorities,
+            color_mood,
+            special_requests,
+          }),
         });
 
         const json = await res.json();
