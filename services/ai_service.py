@@ -22,23 +22,45 @@ FALLBACK_MODEL = "qwen/qwen3.8-27b"
 
 
 def _clean_json(raw: str) -> dict:
-    """Strip markdown fences, extract outermost JSON object, and parse."""
+    """Strip markdown fences, extract outermost JSON object, and parse with auto-repair."""
     raw = raw.strip()
-    # If fenced in markdown
     fence_match = re.search(r"```(?:json)?\s*([\s\S]*?)\s*```", raw)
     if fence_match:
         raw = fence_match.group(1).strip()
 
-    # Extract outermost JSON boundaries
     start = raw.find("{")
     end = raw.rfind("}")
-    if start != -1 and end != -1 and end > start:
-        raw = raw[start : end + 1]
+    if start != -1:
+        if end != -1 and end > start:
+            candidate = raw[start : end + 1]
+        else:
+            candidate = raw[start:]
+    else:
+        candidate = raw
 
-    # Clean potential trailing commas before closing braces/brackets
-    cleaned = re.sub(r",\s*([\]}])", r"\1", raw)
+    # First attempt: standard clean and json.loads
+    try:
+        cleaned = re.sub(r",\s*([\]}])", r"\1", candidate)
+        return json.loads(cleaned)
+    except Exception:
+        pass
 
-    return json.loads(cleaned)
+    # Second attempt: json_repair for truncated / malformed JSON (handles unescaped quotes, missing commas)
+    try:
+        import json_repair
+        repaired = json_repair.repair_json(candidate, return_objects=True)
+        if isinstance(repaired, dict) and len(repaired) > 0:
+            return repaired
+    except Exception:
+        pass
+
+    # Third attempt: full raw string through json_repair
+    import json_repair
+    repaired = json_repair.repair_json(raw, return_objects=True)
+    if isinstance(repaired, dict) and len(repaired) > 0:
+        return repaired
+
+    raise json.JSONDecodeError("Failed to parse or repair JSON", raw, 0)
 
 
 def _call_text_model(prompt: str) -> dict:
@@ -55,13 +77,14 @@ def _call_text_model(prompt: str) -> dict:
                             "reasoning engine. You possess deep fluency in authentic Indian retail pricing, "
                             "catalog series from IKEA India, Pepperfry, Urban Ladder, Amazon, Flipkart, Swiggy, "
                             "and Zomato. Always return strictly valid, raw JSON conforming to the requested schema. "
-                            "Do NOT include markdown code blocks, conversational pleasantries, or preamble."
+                            "Do NOT include markdown code blocks, conversational pleasantries, or preamble. "
+                            "NEVER use unescaped double quotes inside string fields."
                         ),
                     },
                     {"role": "user", "content": prompt},
                 ],
                 temperature=0.55,
-                max_tokens=4096,
+                max_tokens=8192,
             )
             content = response.choices[0].message.content
             return {"success": True, "data": _clean_json(content)}

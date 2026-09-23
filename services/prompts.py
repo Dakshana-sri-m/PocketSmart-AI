@@ -41,8 +41,10 @@ USER SPECIFICATIONS & GUIDED INTEL:
    Formulate a distinct design concept directly inspired by {aesthetic} and {color_mood}.
    Define an exact 4-color palette with hex codes and functional room roles.
 
-4. SPATIAL ZONING:
-   Divide each room into functional zones (Rest Sanctuary, Focus Workstation, Storage/Organization, Ambient Atmosphere). Recommend 4 to 6 specific, tangible products per room.
+4. SPATIAL ZONING & PRODUCT DISCIPLINE:
+   - For primary spaces (Living Room, Bedroom, Study), recommend 3 to 4 signature anchor pieces.
+   - For compact or utility spaces (Bathroom, Balcony, Kitchen, Dining), recommend 2 to 3 focused, high-impact essentials.
+   - This guarantees a cohesive, comprehensive turnkey plan across all rooms without token bloat or truncation.
 
 5. REAL CATALOG GROUNDING:
    Use REAL catalog lines with realistic Indian INR pricing:
@@ -55,6 +57,7 @@ USER SPECIFICATIONS & GUIDED INTEL:
    - NEVER combine platform names (e.g., "Flipkart Pepperfry" is STRICTLY FORBIDDEN). Platform MUST be exactly ONE of: "IKEA", "Pepperfry", "Urban Ladder", "Amazon", "Flipkart".
    - NO vague filler clichés ("space-saving design with sturdy construction", "warm illumination creates cozy ambience").
    - EVERY product MUST include concrete "specs" (dimensions, material, finish) and an insider "pro_tip" (procurement hack, assembly tip, or maintenance advice).
+   - NEVER use unescaped double quotes inside strings. Use single quotes or abbreviations (e.g. 'Monster' or 50 cm), never unescaped double quotes.
 
 ---
 OUTPUT FORMAT:
