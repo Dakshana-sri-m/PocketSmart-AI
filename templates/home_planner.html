@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home Interior Planner — PocketSmart AI</title>
+  <meta name="description" content="Plan your home interior with AI. Enter your budget, select rooms, and get personalized product recommendations from Amazon, IKEA, Flipkart." />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo"><div class="logo-icon">💡</div>PocketSmart AI</a>
+      <ul class="nav-links">
+        <li><a href="/home" class="active">🏠 Home Planner</a></li>
+        <li><a href="/party">🎉 Party Planner</a></li>
+        <li><a href="/jewelry">💍 Jewelry Planner</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" class="loading-overlay">
+    <div class="spinner"></div>
+    <div class="loading-text">AI is designing your home...</div>
+  </div>
+
+  <div class="container">
+
+    <!-- Page Hero -->
+    <div class="page-hero">
+      <div class="page-hero" style="padding-bottom:0">
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:rgba(124,58,237,0.12);border:1px solid rgba(124,58,237,0.3);border-radius:100px;font-size:0.82rem;font-weight:600;color:var(--accent-2);margin-bottom:20px;">
+          🏠 Home Interior Planner
+        </div>
+      </div>
+      <h1 class="fade-in">Design Your Home Within <span class="gradient-text">Budget</span></h1>
+      <p class="fade-in fade-in-1" style="margin-top:12px;">
+        Tell us your budget and which rooms you want to furnish. Our AI will recommend the best products across Amazon, IKEA, Flipkart, Pepperfry and more.
+      </p>
+    </div>
+
+    <!-- Form Panel -->
+    <div class="glass-card form-panel fade-in fade-in-2">
+      <form id="home-form" novalidate>
+
+        <!-- Budget -->
+        <div class="form-group">
+          <label class="form-label" for="budget">Total Budget</label>
+          <div class="input-prefix-group">
+            <span class="input-prefix">₹</span>
+            <input
+              type="number"
+              id="budget"
+              name="budget"
+              class="form-input"
+              placeholder="e.g. 50000"
+              min="1000"
+              max="10000000"
+              required
+            />
+          </div>
+        </div>
+
+        <!-- Room Selector -->
+        <div class="form-group">
+          <label class="form-label">Select Rooms to Furnish</label>
+          <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:12px;">Click a room to select it. Use +/- to set quantity.</p>
+          <div class="room-grid" id="room-grid">
+            <!-- Rooms injected by JS -->
+          </div>
+          <div id="room-error" style="font-size:0.82rem;color:var(--error);margin-top:8px;display:none;">
+            ⚠️ Please select at least one room.
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg" id="submit-btn" style="width:100%;justify-content:center;margin-top:8px;">
+          ✨ Generate Recommendations
+        </button>
+
+      </form>
+    </div>
+
+    <!-- Results Section -->
+    <div id="results-section" class="results-section" style="display:none;">
+
+      <div class="results-header">
+        <h2>🏠 Your Home Plan</h2>
+        <div class="budget-badge" id="total-budget-badge">💰 Budget: ₹0</div>
+      </div>
+
+      <!-- Master Blueprint Card -->
+      <div id="blueprint-container"></div>
+
+      <div id="summary-text" class="summary-box" style="display:none;"></div>
+
+      <div id="room-results-container"></div>
+
+    </div>
+
+    <div style="height: 60px;"></div>
+  </div>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+  <script>
+    // ── Room definitions ──────────────────────────────────────
+    const ROOMS = [
+      { id: 'living',   name: 'Living Room',  icon: '🛋️' },
+      { id: 'bedroom',  name: 'Bedroom',       icon: '🛏️' },
+      { id: 'kitchen',  name: 'Kitchen',       icon: '🍳' },
+      { id: 'dining',   name: 'Dining Room',   icon: '🪑' },
+      { id: 'bathroom', name: 'Bathroom',      icon: '🚿' },
+      { id: 'balcony',  name: 'Balcony',       icon: '🌿' },
+      { id: 'kids',     name: "Kids' Room",    icon: '🧸' },
+      { id: 'study',    name: 'Study / Office', icon: '📚' },
+    ];
+
+    const selectedRooms = {}; // { roomId: quantity }
+
+    function buildRoomGrid() {
+      const grid = document.getElementById('room-grid');
+      grid.innerHTML = '';
+      ROOMS.forEach(room => {
+        const chip = document.createElement('div');
+        chip.className = 'room-chip';
+        chip.id = `chip-${room.id}`;
+        chip.innerHTML = `
+          <div class="room-icon">${room.icon}</div>
+          <div class="room-name">${room.name}</div>
+          <div class="room-qty-controls">
+            <button type="button" class="qty-btn" onclick="changeQty('${room.id}', -1)">−</button>
+            <span class="qty-display" id="qty-${room.id}">1</span>
+            <button type="button" class="qty-btn" onclick="changeQty('${room.id}', 1)">+</button>
+          </div>
+        `;
+        chip.addEventListener('click', (e) => {
+          if (e.target.classList.contains('qty-btn') || e.target.closest('.qty-btn')) return;
+          toggleRoom(room.id);
+        });
+        grid.appendChild(chip);
+      });
+    }
+
+    function toggleRoom(id) {
+      const chip = document.getElementById(`chip-${id}`);
+      if (selectedRooms[id]) {
+        delete selectedRooms[id];
+        chip.classList.remove('selected');
+      } else {
+        selectedRooms[id] = 1;
+        chip.classList.add('selected');
+        document.getElementById(`qty-${id}`).textContent = 1;
+      }
+    }
+
+    function changeQty(id, delta) {
+      if (!selectedRooms[id]) return;
+      const newQty = Math.max(1, Math.min(10, (selectedRooms[id] || 1) + delta));
+      selectedRooms[id] = newQty;
+      document.getElementById(`qty-${id}`).textContent = newQty;
+    }
+
+    buildRoomGrid();
+
+    // ── Form submission ───────────────────────────────────────
+    document.getElementById('home-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const budget = document.getElementById('budget').value;
+      const roomError = document.getElementById('room-error');
+
+      const selectedList = Object.entries(selectedRooms).map(([id, qty]) => {
+        const room = ROOMS.find(r => r.id === id);
+        return { name: room ? room.name : id, quantity: qty };
+      });
+
+      if (selectedList.length === 0) {
+        roomError.style.display = 'block';
+        return;
+      }
+      roomError.style.display = 'none';
+
+      if (!budget || parseInt(budget) < 1000) {
+        document.getElementById('budget').focus();
+        return;
+      }
+
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      showLoading('Architectural AI is designing your space...');
+
+      try {
+        const res = await fetch('/generate-home', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ budget: parseInt(budget), rooms: selectedList }),
+        });
+
+        const json = await res.json();
+        hideLoading();
+        btn.disabled = false;
+
+        if (!json.success) {
+          showError(json.error || 'Something went wrong. Please try again.', 'room-results-container');
+          document.getElementById('results-section').style.display = 'block';
+          setTimeout(() => document.getElementById('results-section').classList.add('visible'), 50);
+          return;
+        }
+
+        renderHomeResults(json.data, parseInt(budget));
+
+      } catch (err) {
+        hideLoading();
+        btn.disabled = false;
+        showError('Network error: ' + err.message, 'room-results-container');
+        document.getElementById('results-section').style.display = 'block';
+        setTimeout(() => document.getElementById('results-section').classList.add('visible'), 50);
+      }
+    });
+
+    function renderHomeResults(data, budget) {
+      // Budget badge
+      document.getElementById('total-budget-badge').textContent = '💰 Budget: ' + formatINR(budget);
+
+      // Render Master Blueprint
+      renderBlueprint(data, 'blueprint-container');
+
+      // Standalone summary box (only if blueprint didn't render it)
+      const summaryBox = document.getElementById('summary-text');
+      if (data.summary && !data.design_philosophy) {
+        summaryBox.innerHTML = `<strong>📝 AI Summary:</strong> ${escHtml(data.summary)}`;
+        summaryBox.style.display = 'block';
+      } else {
+        summaryBox.style.display = 'none';
+      }
+
+      // Room sections
+      const container = document.getElementById('room-results-container');
+      container.innerHTML = '';
+
+      const rooms = data.rooms || [];
+      rooms.forEach((room, ri) => {
+        const section = document.createElement('div');
+        section.className = 'category-section';
+        section.innerHTML = `
+          <div class="category-section-header">
+            <h3>${escHtml(room.room_name || 'Room')}</h3>
+            <span class="budget-pill">${formatINR(room.allocated_budget)}</span>
+            ${room.zone_summary ? `<span style="font-size:0.8rem;color:var(--text-muted);margin-left:8px">— ${escHtml(room.zone_summary)}</span>` : ''}
+          </div>
+          <div class="products-grid" id="room-products-${ri}"></div>
+        `;
+        container.appendChild(section);
+        renderProductCards(room.products || [], `room-products-${ri}`);
+      });
+
+      showResults('results-section');
+    }
+  </script>
+</body>
+</html>

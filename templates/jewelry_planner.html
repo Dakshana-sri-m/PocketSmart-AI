@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jewelry Planner — PocketSmart AI</title>
+  <meta name="description" content="Find the perfect jewelry for any occasion. Upload your outfit photo and get AI-curated jewelry recommendations that match your style and budget." />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo"><div class="logo-icon">💡</div>PocketSmart AI</a>
+      <ul class="nav-links">
+        <li><a href="/home">🏠 Home Planner</a></li>
+        <li><a href="/party">🎉 Party Planner</a></li>
+        <li><a href="/jewelry" class="active">💍 Jewelry Planner</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" class="loading-overlay">
+    <div class="spinner"></div>
+    <div class="loading-text">AI is styling your look...</div>
+  </div>
+
+  <div class="container">
+
+    <!-- Page Hero -->
+    <div class="page-hero">
+      <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:rgba(219,39,119,0.12);border:1px solid rgba(219,39,119,0.3);border-radius:100px;font-size:0.82rem;font-weight:600;color:#f472b6;margin-bottom:20px;">
+        💍 Jewelry Planner
+      </div>
+      <h1 class="fade-in">Find Jewelry That <span class="gradient-text">Matches Your Look</span></h1>
+      <p class="fade-in fade-in-1" style="margin-top:12px;">
+        Tell us your occasion, style, and budget. Optionally upload your outfit photo — our AI vision model will coordinate jewelry to match your colors and aesthetics.
+      </p>
+    </div>
+
+    <!-- Form Panel -->
+    <div class="glass-card form-panel fade-in fade-in-2">
+      <form id="jewelry-form" enctype="multipart/form-data" novalidate>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+
+          <!-- Budget -->
+          <div class="form-group">
+            <label class="form-label" for="budget">Jewelry Budget</label>
+            <div class="input-prefix-group">
+              <span class="input-prefix">₹</span>
+              <input type="number" id="budget" name="budget" class="form-input"
+                placeholder="e.g. 15000" min="500" required />
+            </div>
+          </div>
+
+          <!-- Occasion -->
+          <div class="form-group">
+            <label class="form-label" for="occasion">Occasion</label>
+            <select id="occasion" name="occasion" class="form-select">
+              <option value="Wedding">💒 Wedding</option>
+              <option value="Anniversary">💑 Anniversary</option>
+              <option value="Birthday">🎂 Birthday</option>
+              <option value="Festival">🪔 Festival / Puja</option>
+              <option value="Office / Professional">💼 Office / Professional</option>
+              <option value="Casual Day Out">☀️ Casual Day Out</option>
+              <option value="Date Night">🌙 Date Night</option>
+              <option value="Graduation">🎓 Graduation</option>
+            </select>
+          </div>
+
+        </div>
+
+        <!-- Style Preference -->
+        <div class="form-group">
+          <label class="form-label">Style Preference</label>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;" id="style-chips">
+            <!-- Built by JS -->
+          </div>
+          <input type="hidden" name="style" id="style-hidden" value="Modern Minimalist" />
+        </div>
+
+        <!-- Image Upload -->
+        <div class="form-group">
+          <label class="form-label">Outfit Photo <span style="color:var(--text-muted);font-size:0.78rem;text-transform:none;font-weight:400">(Optional — for color-matched recommendations)</span></label>
+          <div class="upload-zone" id="upload-zone">
+            <input type="file" id="outfit_image" name="outfit_image" accept="image/*" />
+            <div class="upload-zone-content">
+              <div class="upload-icon">📸</div>
+              <div class="upload-text">Drag & drop or click to upload your outfit photo</div>
+              <div class="upload-hint">Supports JPG, PNG, WEBP · Max 10MB</div>
+            </div>
+            <div class="upload-preview" id="upload-preview">
+              <img src="" alt="Outfit preview" />
+              <button type="button" class="upload-preview-clear" onclick="clearUpload('upload-zone','outfit_image','upload-preview')">✕</button>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg" id="submit-btn" style="width:100%;justify-content:center;">
+          💍 Get Jewelry Recommendations
+        </button>
+
+      </form>
+    </div>
+
+    <!-- Results Section -->
+    <div id="results-section" class="results-section" style="display:none;">
+
+      <div class="results-header">
+        <h2>💍 Your Jewelry Picks</h2>
+        <div class="budget-badge" id="total-budget-badge">💰 Budget: ₹0</div>
+      </div>
+
+      <!-- Master Blueprint Card -->
+      <div id="blueprint-container"></div>
+
+      <!-- Outfit analysis (shown only when image uploaded) -->
+      <div id="outfit-analysis" class="analysis-box" style="display:none;">
+        <div class="analysis-label">👗 Outfit Analysis</div>
+        <div id="outfit-analysis-text"></div>
+      </div>
+
+      <!-- Total estimated -->
+      <div id="total-estimated-badge" style="display:none;margin-bottom:20px;"></div>
+
+      <div class="products-grid" id="jewelry-results"></div>
+
+      <div id="styling-tip" class="summary-box" style="display:none;"></div>
+
+    </div>
+
+    <div style="height: 60px;"></div>
+  </div>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+  <script>
+    // ── Style chips ───────────────────────────────────────────
+    const STYLES = [
+      { label: 'Modern Minimalist',  icon: '✦' },
+      { label: 'Traditional / Ethnic', icon: '🪬' },
+      { label: 'Boho Chic',          icon: '🌸' },
+      { label: 'Classic Elegant',    icon: '👑' },
+      { label: 'Statement Bold',     icon: '⚡' },
+      { label: 'Delicate & Dainty',  icon: '🌷' },
+    ];
+
+    let selectedStyle = 'Modern Minimalist';
+
+    function buildStyleChips() {
+      const container = document.getElementById('style-chips');
+      STYLES.forEach(s => {
+        const chip = document.createElement('div');
+        chip.className = 'room-chip' + (s.label === selectedStyle ? ' selected' : '');
+        chip.style.cssText = 'flex-direction:row;padding:10px 16px;min-width:auto;';
+        chip.innerHTML = `<span>${s.icon}</span><span class="room-name" style="font-size:0.85rem">${s.label}</span>`;
+        chip.addEventListener('click', () => {
+          document.querySelectorAll('#style-chips .room-chip').forEach(c => c.classList.remove('selected'));
+          chip.classList.add('selected');
+          selectedStyle = s.label;
+          document.getElementById('style-hidden').value = s.label;
+        });
+        container.appendChild(chip);
+      });
+    }
+
+    buildStyleChips();
+
+    // ── Upload zone init ──────────────────────────────────────
+    initUploadZone('upload-zone', 'outfit_image', 'upload-preview');
+
+    // ── Form submission ────────────────────────────────────────
+    document.getElementById('jewelry-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const budget = parseInt(document.getElementById('budget').value);
+      if (!budget || budget < 500) return;
+
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+
+      const fileInput = document.getElementById('outfit_image');
+      const hasImage  = fileInput.files && fileInput.files.length > 0;
+      showLoading(hasImage ? 'Gemological Stylist is analyzing your outfit...' : 'Fine Jewelry Stylist is curating your look...');
+
+      const formData = new FormData(document.getElementById('jewelry-form'));
+
+      try {
+        const res = await fetch('/generate-jewelry', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const json = await res.json();
+        hideLoading();
+        btn.disabled = false;
+
+        if (!json.success) {
+          showError(json.error || 'Something went wrong.', 'jewelry-results');
+          document.getElementById('results-section').style.display = 'block';
+          setTimeout(() => document.getElementById('results-section').classList.add('visible'), 50);
+          return;
+        }
+
+        renderJewelryResults(json.data, budget);
+
+      } catch (err) {
+        hideLoading();
+        btn.disabled = false;
+        showError('Network error: ' + err.message, 'jewelry-results');
+        document.getElementById('results-section').style.display = 'block';
+        setTimeout(() => document.getElementById('results-section').classList.add('visible'), 50);
+      }
+    });
+
+    function renderJewelryResults(data, budget) {
+      document.getElementById('total-budget-badge').textContent = '💰 Budget: ' + formatINR(budget);
+
+      // Render Master Blueprint
+      renderBlueprint(data, 'blueprint-container');
+
+      // Outfit analysis (vision model output)
+      const analysisBox  = document.getElementById('outfit-analysis');
+      const analysisText = document.getElementById('outfit-analysis-text');
+      if (data.outfit_analysis) {
+        analysisText.textContent = data.outfit_analysis;
+        analysisBox.style.display = 'block';
+      } else {
+        analysisBox.style.display = 'none';
+      }
+
+      // Total estimated
+      const totalBadge = document.getElementById('total-estimated-badge');
+      if (data.total_estimated) {
+        totalBadge.style.display = 'block';
+        totalBadge.innerHTML = `<span class="budget-badge">🛒 Estimated Total: ${formatINR(data.total_estimated)}</span>`;
+      } else {
+        totalBadge.style.display = 'none';
+      }
+
+      // Product cards
+      renderProductCards(data.recommendations || [], 'jewelry-results');
+
+      // Styling tip
+      const tipBox = document.getElementById('styling-tip');
+      if (data.styling_tip && !data.curated_aesthetic) {
+        tipBox.innerHTML = `<strong>💡 Styling Tip:</strong> ${escHtml(data.styling_tip)}`;
+        tipBox.style.display = 'block';
+      } else {
+        tipBox.style.display = 'none';
+      }
+
+      showResults('results-section');
+    }
+  </script>
+</body>
+</html>

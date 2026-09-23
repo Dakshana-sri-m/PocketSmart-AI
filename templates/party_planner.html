@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Party Budget Planner — PocketSmart AI</title>
+  <meta name="description" content="Plan your dream party or event with AI. Get budget allocations and vendor recommendations for catering, decoration, entertainment and accommodation." />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo"><div class="logo-icon">💡</div>PocketSmart AI</a>
+      <ul class="nav-links">
+        <li><a href="/home">🏠 Home Planner</a></li>
+        <li><a href="/party" class="active">🎉 Party Planner</a></li>
+        <li><a href="/jewelry">💍 Jewelry Planner</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" class="loading-overlay">
+    <div class="spinner"></div>
+    <div class="loading-text">AI is planning your event...</div>
+  </div>
+
+  <div class="container">
+
+    <!-- Page Hero -->
+    <div class="page-hero">
+      <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:rgba(219,39,119,0.12);border:1px solid rgba(219,39,119,0.3);border-radius:100px;font-size:0.82rem;font-weight:600;color:#f472b6;margin-bottom:20px;">
+        🎉 Party Budget Planner
+      </div>
+      <h1 class="fade-in">Plan Your Perfect Event <span class="gradient-text">Without Overspending</span></h1>
+      <p class="fade-in fade-in-1" style="margin-top:12px;">
+        Enter your event details and budget. AI allocates funds across catering, decoration, entertainment, and accommodation — with vendor suggestions from Swiggy, Zomato, OYO, and more.
+      </p>
+    </div>
+
+    <!-- Form Panel -->
+    <div class="glass-card form-panel fade-in fade-in-2">
+      <form id="party-form" novalidate>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+
+          <!-- Budget -->
+          <div class="form-group">
+            <label class="form-label" for="budget">Total Budget</label>
+            <div class="input-prefix-group">
+              <span class="input-prefix">₹</span>
+              <input type="number" id="budget" name="budget" class="form-input"
+                placeholder="e.g. 100000" min="1000" required />
+            </div>
+          </div>
+
+          <!-- Guest Count -->
+          <div class="form-group">
+            <label class="form-label" for="guests">Number of Guests</label>
+            <input type="number" id="guests" name="guests" class="form-input"
+              placeholder="e.g. 100" min="1" max="10000" required />
+          </div>
+
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+
+          <!-- Event Type -->
+          <div class="form-group">
+            <label class="form-label" for="event_type">Event Type</label>
+            <select id="event_type" name="event_type" class="form-select">
+              <option value="Birthday">🎂 Birthday Party</option>
+              <option value="Wedding">💒 Wedding</option>
+              <option value="Corporate">💼 Corporate Event</option>
+              <option value="Baby Shower">🍼 Baby Shower</option>
+              <option value="Anniversary">💑 Anniversary</option>
+              <option value="Farewell">👋 Farewell Party</option>
+              <option value="Festival Celebration">🪔 Festival Celebration</option>
+            </select>
+          </div>
+
+          <!-- Venue -->
+          <div class="form-group">
+            <label class="form-label" for="venue">Venue Type</label>
+            <select id="venue" name="venue" class="form-select">
+              <option value="Indoor Banquet Hall">🏛️ Indoor Banquet Hall</option>
+              <option value="Outdoor Garden">🌳 Outdoor Garden</option>
+              <option value="Home / Terrace">🏠 Home / Terrace</option>
+              <option value="Restaurant Private Room">🍽️ Restaurant Private Room</option>
+              <option value="Beach / Resort">🏖️ Beach / Resort</option>
+              <option value="Office Premises">🏢 Office Premises</option>
+            </select>
+          </div>
+
+        </div>
+
+        <!-- Live Budget Preview -->
+        <div id="budget-preview" style="display:none;margin:8px 0 20px;">
+          <label class="form-label">Estimated Budget Breakdown</label>
+          <div class="budget-breakdown" id="budget-breakdown-grid">
+            <div class="breakdown-item">
+              <div class="breakdown-icon">🍱</div>
+              <div class="breakdown-label">Catering</div>
+              <div class="breakdown-amount" id="bd-catering">—</div>
+            </div>
+            <div class="breakdown-item">
+              <div class="breakdown-icon">🎀</div>
+              <div class="breakdown-label">Decoration</div>
+              <div class="breakdown-amount" id="bd-decor">—</div>
+            </div>
+            <div class="breakdown-item">
+              <div class="breakdown-icon">🎵</div>
+              <div class="breakdown-label">Entertainment</div>
+              <div class="breakdown-amount" id="bd-entertainment">—</div>
+            </div>
+            <div class="breakdown-item">
+              <div class="breakdown-icon">🏨</div>
+              <div class="breakdown-label">Misc / Stay</div>
+              <div class="breakdown-amount" id="bd-misc">—</div>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg" id="submit-btn" style="width:100%;justify-content:center;">
+          🎉 Generate Party Plan
+        </button>
+
+      </form>
+    </div>
+
+    <!-- Results Section -->
+    <div id="results-section" class="results-section" style="display:none;">
+
+      <div class="results-header">
+        <h2>🎉 Your Party Plan</h2>
+        <div class="budget-badge" id="total-budget-badge">💰 Budget: ₹0</div>
+      </div>
+
+      <!-- Master Blueprint Card -->
+      <div id="blueprint-container"></div>
+
+      <!-- Budget breakdown display -->
+      <div class="budget-breakdown" id="results-breakdown" style="margin-bottom:28px;"></div>
+
+      <div id="party-categories-container"></div>
+
+      <div id="summary-text" class="summary-box" style="display:none;"></div>
+
+    </div>
+
+    <div style="height: 60px;"></div>
+  </div>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+  <script>
+    // ── Live budget preview ────────────────────────────────────
+    const budgetInput = document.getElementById('budget');
+    budgetInput.addEventListener('input', updatePreview);
+
+    function updatePreview() {
+      const val = parseInt(budgetInput.value);
+      if (!val || val <= 0) {
+        document.getElementById('budget-preview').style.display = 'none';
+        return;
+      }
+      document.getElementById('budget-preview').style.display = 'block';
+      document.getElementById('bd-catering').textContent       = formatINR(Math.round(val * 0.40));
+      document.getElementById('bd-decor').textContent          = formatINR(Math.round(val * 0.25));
+      document.getElementById('bd-entertainment').textContent  = formatINR(Math.round(val * 0.20));
+      document.getElementById('bd-misc').textContent           = formatINR(Math.round(val * 0.15));
+    }
+
+    // ── Form Submission ────────────────────────────────────────
+    document.getElementById('party-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const budget     = parseInt(document.getElementById('budget').value);
+      const guests     = parseInt(document.getElementById('guests').value);
+      const event_type = document.getElementById('event_type').value;
+      const venue      = document.getElementById('venue').value;
+
+      if (!budget || budget < 1000 || !guests || guests < 1) return;
+
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      showLoading('Executive Event Producer is tailoring your celebration...');
+
+      try {
+        const res = await fetch('/generate-party', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ budget, guests, event_type, venue }),
+        });
+
+        const json = await res.json();
+        hideLoading();
+        btn.disabled = false;
+
+        if (!json.success) {
+          showError(json.error || 'Something went wrong.', 'party-categories-container');
+          document.getElementById('results-section').style.display = 'block';
+          setTimeout(() => document.getElementById('results-section').classList.add('visible'), 50);
+          return;
+        }
+
+        renderPartyResults(json.data, budget);
+
+      } catch (err) {
+        hideLoading();
+        btn.disabled = false;
+        showError('Network error: ' + err.message, 'party-categories-container');
+        document.getElementById('results-section').style.display = 'block';
+        setTimeout(() => document.getElementById('results-section').classList.add('visible'), 50);
+      }
+    });
+
+    const CATEGORY_ICONS = {
+      'catering':       '🍱',
+      'decoration':     '🎀',
+      'entertainment':  '🎵',
+      'accommodation':  '🏨',
+      'misc':           '📦',
+    };
+
+    function getCategoryIcon(name) {
+      const key = Object.keys(CATEGORY_ICONS).find(k => name.toLowerCase().includes(k));
+      return key ? CATEGORY_ICONS[key] : '📋';
+    }
+
+    function renderPartyResults(data, budget) {
+      document.getElementById('total-budget-badge').textContent = '💰 Budget: ' + formatINR(budget);
+
+      // Render Master Blueprint
+      renderBlueprint(data, 'blueprint-container');
+
+      // Budget breakdown display
+      const bd = data.budget_breakdown || {};
+      const bdContainer = document.getElementById('results-breakdown');
+      bdContainer.innerHTML = `
+        <div class="breakdown-item"><div class="breakdown-icon">🍱</div><div class="breakdown-label">Catering</div><div class="breakdown-amount">${formatINR(bd.catering || 0)}</div></div>
+        <div class="breakdown-item"><div class="breakdown-icon">🎀</div><div class="breakdown-label">Decoration</div><div class="breakdown-amount">${formatINR(bd.decoration || 0)}</div></div>
+        <div class="breakdown-item"><div class="breakdown-icon">🎵</div><div class="breakdown-label">Entertainment</div><div class="breakdown-amount">${formatINR(bd.entertainment || 0)}</div></div>
+        <div class="breakdown-item"><div class="breakdown-icon">🏨</div><div class="breakdown-label">Misc / Stay</div><div class="breakdown-amount">${formatINR(bd.accommodation_misc || 0)}</div></div>
+      `;
+
+      // Category sections
+      const container = document.getElementById('party-categories-container');
+      container.innerHTML = '';
+
+      const categories = data.categories || [];
+      categories.forEach((cat, ci) => {
+        const icon = getCategoryIcon(cat.name || '');
+        const section = document.createElement('div');
+        section.className = 'category-section';
+        section.innerHTML = `
+          <div class="category-section-header">
+            <span style="font-size:1.4rem">${icon}</span>
+            <h3>${escHtml(cat.name)}</h3>
+            <span class="budget-pill">${formatINR(cat.allocated_budget)}</span>
+            ${cat.category_strategy ? `<span style="font-size:0.8rem;color:var(--text-muted);margin-left:8px">— ${escHtml(cat.category_strategy)}</span>` : ''}
+          </div>
+          <div class="products-grid" id="cat-vendors-${ci}"></div>
+        `;
+        container.appendChild(section);
+        renderVendorCards(cat.vendors || [], `cat-vendors-${ci}`);
+      });
+
+      // Summary
+      const summaryBox = document.getElementById('summary-text');
+      if (data.summary && !data.event_concept) {
+        summaryBox.innerHTML = `<strong>📝 AI Summary:</strong> ${escHtml(data.summary)}`;
+        summaryBox.style.display = 'block';
+      } else {
+        summaryBox.style.display = 'none';
+      }
+
+      showResults('results-section');
+    }
+  </script>
+</body>
+</html>

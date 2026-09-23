@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PocketSmart AI — Smart Budget & Recommendation Assistant</title>
+  <meta name="description" content="PocketSmart AI uses GenAI to give you personalized, budget-aware product recommendations for home interiors, parties, and jewelry — across Amazon, Flipkart, Zomato, and more." />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <div class="logo-icon">💡</div>
+        PocketSmart AI
+      </a>
+      <ul class="nav-links">
+        <li><a href="/home">🏠 Home Planner</a></li>
+        <li><a href="/party">🎉 Party Planner</a></li>
+        <li><a href="/jewelry">💍 Jewelry Planner</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section style="padding: 130px 0 80px;">
+    <div class="container" style="text-align: center;">
+
+      <div class="page-hero-badge fade-in" style="
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 6px 18px;
+        background: rgba(124,58,237,0.12);
+        border: 1px solid rgba(124,58,237,0.3);
+        border-radius: 100px;
+        font-size: 0.82rem; font-weight: 600;
+        color: var(--accent-2);
+        margin-bottom: 24px;">
+        ✨ Powered by Groq · LLaMA 4
+      </div>
+
+      <h1 class="fade-in fade-in-1">
+        Your Smart <span class="gradient-text">Budget &amp; Recommendation</span> Assistant
+      </h1>
+
+      <p class="fade-in fade-in-2" style="max-width: 600px; margin: 20px auto 48px; font-size: 1.1rem; color: var(--text-secondary);">
+        PocketSmart AI delivers personalized, budget-aware product suggestions from Amazon, Flipkart, IKEA, Swiggy, Zomato, and OYO — powered by GenAI.
+      </p>
+
+      <!-- Planner Cards -->
+      <div class="planner-cards fade-in fade-in-3">
+
+        <a href="/home" class="glass-card planner-card">
+          <span class="planner-card-icon">🏠</span>
+          <h3>Home Interior Planner</h3>
+          <p>Set your budget, pick your rooms, and get AI-curated furniture & decor recommendations that fit your style and wallet.</p>
+          <div class="card-cta">Start Planning <span>→</span></div>
+        </a>
+
+        <a href="/party" class="glass-card planner-card">
+          <span class="planner-card-icon">🎉</span>
+          <h3>Party Budget Planner</h3>
+          <p>Plan your dream birthday, wedding, or corporate event. AI allocates your budget across catering, decor, entertainment &amp; more.</p>
+          <div class="card-cta">Plan My Event <span>→</span></div>
+        </a>
+
+        <a href="/jewelry" class="glass-card planner-card">
+          <span class="planner-card-icon">💍</span>
+          <h3>Jewelry Planner</h3>
+          <p>Tell us the occasion and your style. Optionally upload your outfit photo — AI will suggest perfectly coordinated jewelry.</p>
+          <div class="card-cta">Find Jewelry <span>→</span></div>
+        </a>
+
+      </div>
+
+      <!-- Feature Pills -->
+      <div class="fade-in fade-in-4" style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:16px;">
+        <span style="padding:8px 18px;background:var(--bg-card);border:1px solid var(--glass-border);border-radius:100px;font-size:0.82rem;color:var(--text-secondary);">⚡ Instant AI Recommendations</span>
+        <span style="padding:8px 18px;background:var(--bg-card);border:1px solid var(--glass-border);border-radius:100px;font-size:0.82rem;color:var(--text-secondary);">📦 Amazon · Flipkart · IKEA</span>
+        <span style="padding:8px 18px;background:var(--bg-card);border:1px solid var(--glass-border);border-radius:100px;font-size:0.82rem;color:var(--text-secondary);">🍽️ Swiggy · Zomato · OYO</span>
+        <span style="padding:8px 18px;background:var(--bg-card);border:1px solid var(--glass-border);border-radius:100px;font-size:0.82rem;color:var(--text-secondary);">📸 Outfit Image Recognition</span>
+        <span style="padding:8px 18px;background:var(--bg-card);border:1px solid var(--glass-border);border-radius:100px;font-size:0.82rem;color:var(--text-secondary);">💰 Budget-Smart Suggestions</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section style="padding: 60px 0 80px;">
+    <div class="container">
+      <h2 style="text-align:center;margin-bottom:40px;">How It <span class="gradient-text">Works</span></h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;">
+
+        <div class="glass-card" style="padding:28px;text-align:center;">
+          <div style="font-size:2rem;margin-bottom:12px;">📝</div>
+          <h4 style="margin-bottom:8px;">1. Enter Your Budget</h4>
+          <p style="font-size:0.88rem;">Tell us how much you want to spend and what you're planning for.</p>
+        </div>
+
+        <div class="glass-card" style="padding:28px;text-align:center;">
+          <div style="font-size:2rem;margin-bottom:12px;">🧠</div>
+          <h4 style="margin-bottom:8px;">2. AI Analyzes & Plans</h4>
+          <p style="font-size:0.88rem;">LLaMA 4 on Groq processes your inputs and generates a smart budget split.</p>
+        </div>
+
+        <div class="glass-card" style="padding:28px;text-align:center;">
+          <div style="font-size:2rem;margin-bottom:12px;">🎯</div>
+          <h4 style="margin-bottom:8px;">3. Get Recommendations</h4>
+          <p style="font-size:0.88rem;">Receive curated product suggestions from top e-commerce platforms.</p>
+        </div>
+
+        <div class="glass-card" style="padding:28px;text-align:center;">
+          <div style="font-size:2rem;margin-bottom:12px;">🛒</div>
+          <h4 style="margin-bottom:8px;">4. Shop Smart</h4>
+          <p style="font-size:0.88rem;">Every recommendation fits your budget with reasoning and ratings.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>
