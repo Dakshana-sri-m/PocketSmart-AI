@@ -3,3 +3,4 @@ groq
 python-dotenv
 Pillow
 json-repair
+gunicorn
